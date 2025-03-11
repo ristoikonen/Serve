@@ -17,14 +17,12 @@
     border-spacing: 0;
     width: 100%;
 }
-thead
-{
+thead {
     position: sticky;
     top: 0;
     z-index: 10;
-    th
 }
-th{
+th {
     color: var(--global-background-color);
     background-color: var(--global-title-color);
     padding: var(--global-space-fixed-2) var(--global-space-fixed-3);
@@ -69,4 +67,3 @@ td:first-child {
 td:last-child {
     border-bottom-right-radius: var(--global-border-radius);
 }
-

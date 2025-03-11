@@ -2,113 +2,86 @@
 <html data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
-    <title>DATA TABLE PAGE</title>
+    <title>DATATABLE.NET PAGE</title>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <!-- <script src="https://cdn.datatables.net/2.2.2/js/dataTables.bootstrap5.js"></script> -->
-
     <!-- https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
     https://cdn.datatables.net/2.2.2/css/dataTables.bootstrap.css -->
 
     <script>
 
+        $(document).ready(function () {
+            //import * as datatbl from dt;
 
-        // https://localhost:44392/WebService1.asmx/HelloWorld
-
-        function getLogValues(arguments, successCallback, errorCallback) {
-            $.ajax({
-                type: "POST",
-                url: "https://localhost:44392/WebService1.asmx/HelloArray",
-                //method: 'HelloWorld',
-                dataType: "xml",
-            }).done(function (data) {
-                console.log(data);
-
-                var parser = new DOMParser(),
-                    xml = parser.parseFromString(data, "text/xml");
-
-                console.log(xml);
-
-                var xmldoc = data.documentElement;
-                console.log(xmldoc);
-
-                iterateNodes(xmldoc.childNodes)
-
-
-                /*
-                table.on('click', 'tbody tr', function () {
-                    let data = table.row(this).data();
-
-                    alert('You clicked on ' + data[0] + "'s row");
+            getTodaysNewUsers({},
+                function (result) {
+                    alert(result);
+                },
+                function () {
+                    alert("Error");
                 });
-                */
+
+            fillSecondTable();
+
+        });
 
 
-                //var xmlDoc = $.parseXML(xmldoc);
-                //console.log(xmlDoc);
+        // This fills up first table
+        function getTodaysNewUsers() {
 
-            });
+            var xmlHttp = new XMLHttpRequest();
+            var url = "https://localhost:44392/WebService1.asmx/NewUsers";
+            //var parameters = "first=d&last=aa";
+            var parameters = "";
+            xmlHttp.open("POST", url, true);
+
+            //xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            //xmlHttp.setRequestHeader("Content-length", parameters.length);
+            //xmlHttp.setRequestHeader("Connection", "close");
+
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                    var table = new DataTable('#example', {
+                        data: loadData(xmlHttp.responseXML.documentElement),
+                        dataType: "xml",
+                        searching: false,
+                        ordering: true,
+                        paging: false,
+                        info: false,
+                        caption: 'New Customers',
+
+                        columnDefs: [
+                            {
+                                className: 'dtr-control',
+                                orderable: false,
+                                targets: 1,
+                            }
+                        ],
+                    })
+                    //table.columns.length = 10;
+                    //table.column(0).title('New title');
+
+                    //Add row click
+                    table.on('click', 'tbody tr', function () {
+                        let data = table.row(this).data();
+
+                        alert('You clicked on ' + data[0] + "'s row");
+                    });
+                    //console.log(xmlHttp.responseXML.documentElement);
+                }
+            }
+            xmlHttp.send(parameters);
         }
 
-
-        function getTodaysNewUsers(arguments, successCallback, errorCallback) {
-            $.ajax({
-                type: "POST",
-                url: "https://localhost:44392/WebService1.asmx/NewUsers",
-                dataType: "application/x-www-form-urlencoded",
-            }).done(function (data) {
-                console.log(data);
-
-                var parser = new DOMParser(),
-                    xml = parser.parseFromString(data, "text/xml");
-
-                console.log(xml);
-
-                var xmldoc = data.documentElement;
-                console.log(xmldoc);
-
-                iterateNodes(xmldoc.childNodes)
-
-                var xmlDoc = $.parseXML(data);
-                console.log('xmlDoc:' + xmlDoc);
-
-            });
-        }
-
-
-        function getTodaysNewUsers2(arguments, successCallback, errorCallback) {
-            $.ajax({
-                type: "POST",
-                url: "https://localhost:44392/WebService1.asmx/NewUsers",
-                dataType: "application/x-www-form-urlencoded",
-            }).done(function (data) {
-                console.log(data);
-
-                var parser = new DOMParser(),
-                    xml = parser.parseFromString(data, "text/xml");
-
-                console.log(xml);
-
-                var xmldoc = data.documentElement;
-                console.log(xmldoc);
-
-                iterateNodes(xmldoc.childNodes)
-
-                var xmlDoc = $.parseXML(data);
-                console.log('xmlDoc:' + xmlDoc);
-
-            });
-        }
-
-
+        // Push inner xml data of UserModel into data
         function loadData(rocol) {
             var data = [];
             console.log('loadData');
             $(rocol).find('UserModel').each(function () {
-                console.log('pushIt');
                 data.push([
                     $(this).find("Name").text(),
                     $(this).find("Email").text(),
@@ -117,11 +90,8 @@
             return data;
         }
 
-
-        function fill2() {
-            //$("#exsample2").DataTable({
-            //    data: loadData(rocol)
-            //})
+        // This fills up bottom table with hardcoded data, to see the default view
+        function fillSecondTable() {
 
             var data_json = [
                 [
@@ -149,10 +119,10 @@
                     {
                         className: 'dtr-control',
                         orderable: false,
-                        targets: 0
+                        targets: 4
                     }
                 ],
-                order: [1, 'asc'],
+                //order: [1, 'asc'],
                 //columns: [
                 //    { data: 'name' },
                 //    { data: 'position' },
@@ -162,46 +132,8 @@
             });
         }
 
-        function getTodaysNewUsers3() {
 
-            var xmlHttp = new XMLHttpRequest();
-            var url = "https://localhost:44392/WebService1.asmx/NewUsers";
-            //var parameters = "first=barack&last=obama";
-            var parameters = "";
-            xmlHttp.open("POST", url, true);
-
-            xmlHttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            //xmlHttp.setRequestHeader("Content-length", parameters.length);
-            //xmlHttp.setRequestHeader("Connection", "close");
-
-            xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
-                    new DataTable('#example', {
-                        data: loadData(xmlHttp.responseXML.documentElement), //xmlHttp.responseXML.documentElement,
-                        dataType: "xml",
-                        columnDefs: [
-                            {
-                                className: 'dtr-control',
-                                orderable: false,
-                                targets: 0
-                            }
-                        ],
-                        //columns: [
-                        //    { data: 'name' },
-                        //    { data: 'email' },
-                        //]
-                    })
-                    console.log(xmlHttp.responseXML.documentElement);
-                    //document.getElementById('UserModel').innerHTML += xmlHttp.responseText + "<br />";
-
-                }
-            }
-
-            xmlHttp.send(parameters);
-        }
-
-
-
+        // For debug puposes
         function iterateNodes(nodes) {
             console.log('iterateNodes');
             for (var i = 0; i < nodes.length; i++) {
@@ -219,65 +151,25 @@
             new DataTable('#example', {
                 data: nodes
             })
-
         }
 
-
-        function initDataTable() {
-            console.log('init DataTable');
-            /*
-            let table = new DataTable('#myTable', {
-                // config options...
+        // first version, not in use.
+        function getLogValues(arguments, successCallback, errorCallback) {
+            $.ajax({
+                type: "POST",
+                url: "https://localhost:44392/WebService1.asmx/HelloArray",
+                //method: 'HelloWorld',
+                dataType: "xml",
+            }).done(function (data) {
+                //console.log(data);
+                var parser = new DOMParser(),
+                    xml = parser.parseFromString(data, "text/xml");
+                //console.log(xml);
+                var xmldoc = data.documentElement;
+                //console.log(xmldoc);
+                iterateNodes(xmldoc.childNodes)
             });
-            */
-
         }
-
-
-
-        $(document).ready(function () {
-            //import * as datatbl from dt;
-
-            getTodaysNewUsers3({},
-                function (result) {
-                    alert(result);
-                },
-                function () {
-                    alert("Error");
-                });
-
-            fill2();
-
-            /*
-                        getLogValues({},
-                            function (result) {
-                                alert(result);
-                            },
-                            function () {
-                                alert("Error");
-                            });
-            */
-
-            //initDataTable({},
-            //    function (result) {
-            //        alert(result);
-            //    },
-            //    function () {
-            //        alert("Error");
-            //    });
-
-            //new DataTable('#example', {
-            //    //ajax: '../ajax/data/arrays.txt'
-            //    //data: xmldoc.childNodes
-            //    ajax: ({
-            //        type: "POST",
-            //        url: "https://localhost:44392/WebService1.asmx/HelloArray",
-            //        dataType: "xml",
-            //    })
-            //})
-
-
-        });
 
     </script>
 
@@ -286,15 +178,13 @@
 </head>
 <body>
 
-    <h3>example</h3>
-
-    <table id="example" class="display" width="100%"></table>
+    <table id="example" class="display" width="88%"></table>
 
     <br><br><br>
 
     <h3>example2</h3>
 
-    <table id="example2" class="table table-striped" width="100%"></table>
+    <table id="example2" class="table table-striped" width="88%"></table>
 
 
 </body>

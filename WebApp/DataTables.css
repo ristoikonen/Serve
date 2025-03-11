@@ -587,8 +587,8 @@ div.dt-container div.dt-layout-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
-    margin: 0.75em 0;
+    width: 80%;
+    margin: 1.75em 0;
 }
 
     div.dt-container div.dt-layout-row div.dt-layout-cell {
