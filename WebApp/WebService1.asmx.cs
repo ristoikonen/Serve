@@ -23,7 +23,7 @@ namespace WebApp
             return "Hello World";
         }
 
-
+        // https://localhost:44392/WebService1.asmx/HelloWorld
         [WebMethod]
         public UserModel NewUser(string userName)
         {
@@ -32,6 +32,18 @@ namespace WebApp
             user.Email = user.Name + "_initial@company.com";
             return user;
         }
+
+        [WebMethod]
+        public List<string> HelloArray()
+        {
+            string[] strings = new string[3];
+            strings[0] = "Hello";
+            strings[1] = "d";
+            strings[2] = "dd";
+
+            return strings.ToList<string>();
+        }
+
 
         //public ResponseModel<string> login(string email, string password)
         //{
