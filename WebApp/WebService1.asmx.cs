@@ -33,6 +33,18 @@ namespace WebApp
             return user;
         }
 
+
+        [WebMethod]
+        public List<UserModel> NewUsers()
+        {
+            List<UserModel> l = new List<UserModel>() {
+                new UserModel() { Name = "Joenne Lloyd", Email = "joennel_init@company.com"} ,
+                new UserModel() { Name = "Kieran Albeni", Email = "kierana_init@company.com"} ,
+                new UserModel() { Name = "Vernon Tompson", Email = "vernont_init@company.com"} ,
+            };
+            return l;
+        }
+
         [WebMethod]
         public List<string> HelloArray()
         {
